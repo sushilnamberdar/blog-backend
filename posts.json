@@ -1,0 +1,103 @@
+[
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439021"
+    },
+    "title": "Getting Started with Node.js Backend Development",
+    "content": "Node.js has revolutionized backend development with its event-driven architecture and non-blocking I/O. In this comprehensive guide, we'll explore the fundamentals of building robust backend applications using Node.js, Express, and MongoDB. We'll cover everything from setting up your development environment to deploying your application to production.",
+    "author": {
+      "$oid": "507f1f77bcf86cd799439012"
+    },
+    "slug": "getting-started-nodejs-backend",
+    "tags": [
+      "nodejs",
+      "backend",
+      "javascript",
+      "express",
+      "mongodb"
+    ],
+    "published": true,
+    "featured": true,
+    "createdAt": {
+      "$date": "2024-01-10T08:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2024-01-10T08:00:00.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439022"
+    },
+    "title": "Security Best Practices for Web Applications",
+    "content": "Web application security is crucial in today's digital landscape. This article covers essential security practices including input validation, authentication, authorization, data sanitization, and protection against common vulnerabilities like XSS, CSRF, and SQL injection.",
+    "author": {
+      "$oid": "507f1f77bcf86cd799439011"
+    },
+    "slug": "security-best-practices-web-apps",
+    "tags": [
+      "security",
+      "web-development",
+      "authentication",
+      "authorization"
+    ],
+    "published": true,
+    "featured": false,
+    "createdAt": {
+      "$date": "2024-01-08T14:30:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2024-01-08T14:30:00.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439023"
+    },
+    "title": "Building RESTful APIs with Express.js",
+    "content": "RESTful API design is fundamental to modern web development. Learn how to create well-structured, scalable APIs using Express.js with proper HTTP methods, status codes, error handling, and documentation.",
+    "author": {
+      "$oid": "507f1f77bcf86cd799439014"
+    },
+    "slug": "building-restful-apis-express",
+    "tags": [
+      "api",
+      "express",
+      "rest",
+      "http"
+    ],
+    "published": true,
+    "featured": false,
+    "createdAt": {
+      "$date": "2024-01-05T10:15:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2024-01-05T10:15:00.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439024"
+    },
+    "title": "MongoDB Aggregation Pipeline Guide",
+    "content": "MongoDB's aggregation pipeline is a powerful tool for data processing and analysis. This guide covers aggregation stages, operators, and real-world examples for complex data transformations.",
+    "author": {
+      "$oid": "507f1f77bcf86cd799439012"
+    },
+    "slug": "mongodb-aggregation-pipeline",
+    "tags": [
+      "mongodb",
+      "database",
+      "aggregation",
+      "data-processing"
+    ],
+    "published": false,
+    "featured": false,
+    "createdAt": {
+      "$date": "2024-01-12T16:45:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2024-01-12T16:45:00.000Z"
+    }
+  }
+]

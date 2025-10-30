@@ -1,0 +1,34 @@
+# Environment Configuration
+# Copy this file to .env and fill in your actual values
+
+# Application Environment
+NODE_ENV=development
+
+# Server Port
+PORT=5000
+
+# Database
+MONGODB_URI=mongodb://localhost:27017/blog
+
+# Client URL for CORS
+CLIENT_URL=http://localhost:3000
+
+# JWT Configuration
+JWT_SECRET=your_jwt_secret_key
+REFRESH_TOKEN_SECRET=your_refresh_secret
+JWT_EXPIRE=15m
+REFRESH_TOKEN_EXPIRE=7d
+
+# SMTP Configuration
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=465
+SMTP_EMAIL=xyz@gmail.com
+SMTP_PASSWORD=xyz
+FROM_NAME=xyz
+FROM_EMAIL=xyz
+
+# Cloudinary Configuration
+CLOUDINARY_CLOUD_NAME=xyz
+CLOUDINARY_API_KEY=xyz
+CLOUDINARY_API_SECRET=xyz
+CLOUDINARY_FOLDER=exz
