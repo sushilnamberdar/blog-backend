@@ -24,15 +24,19 @@ const cleanUnusedImages = async () => {
       type: 'upload',
       prefix: process.env.CLOUDINARY_FOLDER || 'post_images/', // Folder name in Cloudinary
       max_results: 500,
+      // Include creation date to filter by time
+      resource_type: 'image',
     }); 
 
     let deletedCount = 0;
+    const threeHoursAgo = new Date(Date.now() - 3 * 60 * 60 * 1000);
 
-    // 3️⃣ Check which ones are not in DB and delete
+    // 3️⃣ Check which ones are not in DB and older than 3 hours, then delete
     for (const image of cloudImages.resources) {
-      if (!usedImageURLs.has(image.secure_url)) {
+      const uploadedDate = new Date(image.created_at);
+      if (uploadedDate < threeHoursAgo && !usedImageURLs.has(image.secure_url)) {
         await cloudinary.uploader.destroy(image.public_id);
-        console.log(`🗑️ Deleted unused image: ${image.public_id}`);
+        console.log(`🗑️ Deleted unused image: ${image.public_id} (uploaded at ${image.created_at})`);
         deletedCount++;
       }
     }
