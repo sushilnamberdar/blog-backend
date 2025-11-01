@@ -33,4 +33,25 @@ const upload = multer({
   },
 });
 
-module.exports = upload;
+const avatarStorage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: process.env.CLOUDINARY_AVATAR_FOLDER || 'user_avatars',
+    allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
+    transformation: [{ width: 200, height: 200, crop: 'fill' }], // Smaller size for avatars
+  },
+});
+
+const avatarUpload = multer({
+  storage: avatarStorage,
+  limits: { fileSize: 2 * 1024 * 1024 }, // ⛔ max 2MB per avatar
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(file.mimetype)) {
+      return cb(new Error('Only JPEG, PNG, and WEBP images are allowed for avatars!'), false);
+    }
+    cb(null, true);
+  },
+}).single('avatar'); // 'avatar' is the field name for the uploaded file
+
+module.exports = { upload, avatarUpload };

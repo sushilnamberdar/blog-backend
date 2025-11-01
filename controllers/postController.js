@@ -18,9 +18,8 @@ const postController = {
                 status: 'published'
             };
 
-            // Fetch posts with pagination and sorting
             const posts = await Post.find(query)
-                .populate('author', 'name')
+                .populate('author', 'name avatar')
                 .sort({ createdAt: -1 })
                 .skip(skip)
                 .limit(limit);
@@ -70,7 +69,7 @@ const postController = {
             }
 
             const posts = await Post.find(query)
-                .populate('author', 'name')
+                .populate('author', 'name avatar')
                 .sort({ createdAt: -1 })
                 .skip(skip)
                 .limit(limit);
@@ -103,7 +102,7 @@ const postController = {
                 return res.status(400).json({ errors: errors.array() });
             }
 
-            const { title, content, category, tags, coverImage, status } = req.body;
+            const { title, contentBlocks, category, tags, coverImage, status } = req.body;
 
             // ✅ Auto-generate slug
             const slug = slugify(title, { lower: true, strict: true });
@@ -117,7 +116,7 @@ const postController = {
             // ✅ Create new post
             const post = await Post.create({
                 title,
-                content,
+                contentBlocks, // Use contentBlocks here
                 slug,
                 category: category || 'Uncategorized',
                 tags: tags || [],
@@ -138,6 +137,7 @@ const postController = {
             res.status(500).json({ message: error.message });
         }
     },
+
 
 
     getPost: async (req, res) => {
@@ -361,7 +361,7 @@ const postController = {
                 author: req.user.id,
                 isDeleted: false,
             })
-                .populate('author', 'name email role')
+                .populate('author', 'name email role avatar')
                 .sort({ createdAt: -1 })
                 .skip(skip)
                 .limit(limit);
