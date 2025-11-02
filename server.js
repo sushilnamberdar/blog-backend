@@ -18,12 +18,23 @@ const commentRoutes = require('./routes/commentRoutes');
 const mediaRoutes = require('./routes/mediaRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
+const session = require('express-session');
+const passport = require('passport');
+require('./config/passport')(passport);
 
 // Load environment variables
 dotenv.config();
 const app = express();
 
-
+// Passport and Session Middleware
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'supersecret',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: process.env.NODE_ENV === 'production' }
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 
 
 

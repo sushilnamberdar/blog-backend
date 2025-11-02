@@ -17,9 +17,23 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: true,
-        minlength: 8
+        minlength: [8, 'Password must be at least 8 characters long'],
+        required: function () {
+            // Only require password if NOT using Google login
+            return !this.googleId;
+        },
+        validate: {
+            validator: function (value) {
+                // Skip minlength validation if googleId exists (Google login user)
+                if (this.googleId) return true;
+                // Otherwise, check for minimum length
+                return value && value.length >= 8;
+            },
+            message: 'Password must be at least 8 characters long',
+        },
     },
+
+
     role: {
         type: String,
         enum: ['admin', 'author', 'reader', 'anonymous'],
@@ -55,15 +69,21 @@ const userSchema = new mongoose.Schema({
     lastPasswordResetRequest: { type: Date },
     passwordResetAttempts: { type: Number, default: 0 },
     firstPasswordResetAttempt: { type: Date },
+    googleId: {
+        type: String,
+        unique: true,
+        sparse: true
+    },
+
 
 }, { timestamps: true });
 
 userSchema.pre('save', async function (next) {
-    if (!this.isModified('password')) {
-        next();
-    }
+    if (!this.isModified('password') || !this.password) return next();
     this.password = await bcrypt.hash(this.password, 10);
+    next();
 });
+
 
 userSchema.methods.comparePassword = async function (enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);

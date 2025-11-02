@@ -13,11 +13,17 @@ MONGODB_URI=mongodb://localhost:27017/blog
 # Client URL for CORS
 CLIENT_URL=http://localhost:3000
 
+# Server URL
+SERVER_URL=http://localhost:5000
+
 # JWT Configuration
 JWT_SECRET=your_jwt_secret_key
 REFRESH_TOKEN_SECRET=your_refresh_secret
 JWT_EXPIRE=15m
 REFRESH_TOKEN_EXPIRE=7d
+
+# Session Secret
+SESSION_SECRET=your_session_secret
 
 # SMTP Configuration
 SMTP_HOST=smtp.gmail.com
