@@ -7,7 +7,7 @@ const commentController = {
   getComments: async (req, res) => {
     try {
       const comments = await Comment.find({ post: req.params.postId, isApproved: true })
-        .populate("user", "name,avatar")
+        .populate("user", "name avatar")
         .sort({ createdAt: -1 });
 
       // Create a map of comments by their _id
