@@ -66,6 +66,36 @@ const userController = {
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
+    },
+
+    updateUserRole: async (req, res) => {
+        try {
+            const { role } = req.body;
+
+            // a user can change their own role to 'reader' or 'author', but not to 'admin'.
+            if (role === 'admin') {
+                return res.status(403).json({ message: 'You are not authorized to change your role to admin.' });
+            }
+
+            // Optional: Add validation to ensure the role is one of the allowed values
+            if (!['reader', 'author'].includes(role)) {
+                return res.status(400).json({ message: 'Invalid role specified.' });
+            }
+
+            const user = await User.findByIdAndUpdate(
+                req.user.id,
+                { role },
+                { new: true }
+            ).select('-password');
+
+            if (!user) {
+                return res.status(404).json({ message: 'User not found.' });
+            }
+
+            res.json({ message: 'User role updated successfully.', user });
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
     }
 };
 

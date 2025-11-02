@@ -20,5 +20,7 @@ router.put('/profile/avatar', auth, (req, res, next) => {
         next(); // Continue to the controller if no error
     });
 }, userController.updateAvatar);
+router.put('/profile/role', auth, userController.updateUserRole);
+
 
 module.exports = router;

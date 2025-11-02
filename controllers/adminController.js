@@ -1,30 +1,5 @@
-const User = require('../models/User');
+// controllers/adminController.js
 const Post = require('../models/Post');
-
-exports.updateUserRole = async (req, res) => {
-    try {
-        const { userId, role } = req.body;
-
-        // Optional: Add validation to ensure the role is one of the allowed values
-        if (!['reader', 'author', 'admin'].includes(role)) {
-            return res.status(400).json({ message: 'Invalid role specified.' });
-        }
-
-        const user = await User.findByIdAndUpdate(
-            userId,
-            { role },
-            { new: true }
-        ).select('-password');
-
-        if (!user) {
-            return res.status(404).json({ message: 'User not found.' });
-        }
-
-        res.json({ message: 'User role updated successfully.', user });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
 
 exports.restorePost = async (req, res) => {
     try {

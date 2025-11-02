@@ -41,7 +41,22 @@ const userSchema = new mongoose.Schema({
     },
     bio: {
         type: String,
-        maxlength: 500
+        maxlength: 500,
+        default: () => {
+            const defaultBios = [
+                "Just a storyteller sharing thoughts with the world.",
+                "Writing what words can’t always say.",
+                "Here to turn ideas into stories and stories into impact.",
+                "Exploring life, one post at a time.",
+                "Thoughts, experiences, and everything in between.",
+                "Documenting my journey through words.",
+                "Coffee, chaos, and creativity — my daily routine.",
+                "Sharing my perspective, one blog at a time.",
+                "Not a writer, just someone who loves to express.",
+                "Still writing the first draft of my story."
+            ];
+            return defaultBios[Math.floor(Math.random() * defaultBios.length)];
+        }
     },
     avatar: String,
     isActive: {
