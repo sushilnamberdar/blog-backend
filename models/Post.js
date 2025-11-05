@@ -11,7 +11,7 @@ const postSchema = new mongoose.Schema({
 
     contentBlocks: [
         {
-            type: { type: String, enum: ['text', 'image', 'heading'], required: true },
+            type: { type: String, enum: ['text', 'image', 'heading','link'], required: true },
             value: { type: String, required: true }
         }
     ],
