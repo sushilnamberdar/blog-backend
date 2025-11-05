@@ -165,7 +165,7 @@ const postController = {
 
     updatePost: async (req, res) => {
         try {
-            const { title, content, category, tags, coverImage, status } = req.body;
+             const { title, contentBlocks, category, tags, coverImage, status } = req.body;
 
             // Find the post
             const post = await Post.findById(req.params.id);
@@ -183,7 +183,7 @@ const postController = {
                 post.title = title;
                 post.slug = slugify(title, { lower: true, strict: true });
             }
-            if (content) post.content = content;
+           if (contentBlocks) post.contentBlocks = contentBlocks;
             if (category) post.category = category;
             if (tags) post.tags = tags;
             if (coverImage) post.coverImage = coverImage;
