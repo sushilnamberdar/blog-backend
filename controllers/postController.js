@@ -143,7 +143,7 @@ const postController = {
     getPost: async (req, res) => {
         try {
             const post = await Post.findById(req.params.id)
-                .populate('author', 'name email role');
+                .populate('author', 'name role avatar');
 
             if (!post) {
                 return res.status(404).json({ message: 'Post not found' });
