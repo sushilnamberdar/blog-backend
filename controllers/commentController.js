@@ -6,32 +6,32 @@ const commentController = {
 
   getComments: async (req, res) => {
     try {
-      const comments = await Comment.find({ post: req.params.postId, isApproved: true })
-        .populate("user", "name avatar")
-        .sort({ createdAt: -1 });
+        const { page = 1, limit = 10 } = req.query;
+        const postId = req.params.postId;
 
-      // Create a map of comments by their _id
-      const commentMap = {};
-      comments.forEach(comment => {
-        commentMap[comment._id] = comment.toObject();
-        commentMap[comment._id].replies = [];
-      });
+        const skip = (page - 1) * limit;
 
-      // Group replies under parent comments
-      const rootComments = [];
-      comments.forEach(comment => {
-        if (comment.parentComment) {
-          if (commentMap[comment.parentComment]) {
-            commentMap[comment.parentComment].replies.push(commentMap[comment._id]);
-          }
-        } else {
-          rootComments.push(commentMap[comment._id]);
-        }
-      });
+        const rootComments = await Comment.find({ post: postId, parentComment: null, isApproved: true })
+            .populate("user", "name avatar")
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(parseInt(limit));
 
-      res.json(rootComments);
+        const totalRootComments = await Comment.countDocuments({ post: postId, parentComment: null, isApproved: true });
+
+        const commentsWithReplies = await Promise.all(rootComments.map(async (comment) => {
+            const replies = await Comment.find({ parentComment: comment._id, isApproved: true }).populate('user', 'name avatar');
+            return { ...comment.toObject(), replies };
+        }));
+
+        res.json({
+            comments: commentsWithReplies,
+            totalPages: Math.ceil(totalRootComments / limit),
+            currentPage: parseInt(page),
+            totalComments: totalRootComments
+        });
     } catch (error) {
-      res.status(500).json({ message: error.message });
+        res.status(500).json({ message: error.message });
     }
   },
 
