@@ -89,6 +89,10 @@ const userSchema = new mongoose.Schema({
         unique: true,
         sparse: true
     },
+    savedPosts: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Post'
+    }],
 
 
 }, { timestamps: true });

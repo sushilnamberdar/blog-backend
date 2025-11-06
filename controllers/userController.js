@@ -96,6 +96,51 @@ const userController = {
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
+    },
+
+    savePost: async (req, res) => {
+        try {
+            const { postId } = req.params;
+            const userId = req.user.id;
+
+            const user = await User.findById(userId);
+
+            if (!user.savedPosts.includes(postId)) {
+                user.savedPosts.push(postId);
+                await user.save();
+            }
+
+            res.status(200).json({ message: 'Post saved successfully.' });
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    },
+
+    unsavePost: async (req, res) => {
+        try {
+            const { postId } = req.params;
+            const userId = req.user.id;
+
+            const user = await User.findById(userId);
+
+            user.savedPosts = user.savedPosts.filter(savedPost => savedPost.toString() !== postId);
+            await user.save();
+
+            res.status(200).json({ message: 'Post unsaved successfully.' });
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    },
+
+    getSavedPosts: async (req, res) => {
+        try {
+            const userId = req.user.id;
+            const user = await User.findById(userId).populate('savedPosts');
+
+            res.status(200).json({ savedPosts: user.savedPosts });
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
     }
 };
 

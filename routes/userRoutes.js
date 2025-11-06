@@ -22,5 +22,9 @@ router.put('/profile/avatar', auth, (req, res, next) => {
 }, userController.updateAvatar);
 router.put('/profile/role', auth, userController.updateUserRole);
 
+router.get('/saved-posts', auth, userController.getSavedPosts);
+router.post('/save/:postId', auth, userController.savePost);
+router.delete('/save/:postId', auth, userController.unsavePost);
+
 
 module.exports = router;
