@@ -1,37 +1,86 @@
 const Comment = require('../models/Comment');
+const dayjs = require("dayjs");
+const relativeTime = require("dayjs/plugin/relativeTime");
+dayjs.extend(relativeTime);
 
 const commentController = {
-  // ✅ Get all comments for a post (only non-hidden)
-  // controllers/commentController.js
-
   getComments: async (req, res) => {
     try {
-        const { page = 1, limit = 10 } = req.query;
-        const postId = req.params.postId;
+      const { postId } = req.params;
+      if (!postId || postId.length !== 24) {
+        return res.status(400).json({ message: "Invalid post ID" });
+      }
 
-        const skip = (page - 1) * limit;
+      const page = parseInt(req.query.page) || 1;
+      const limit = 10;
+      const skip = (page - 1) * limit;
 
-        const rootComments = await Comment.find({ post: postId, parentComment: null, isApproved: true })
-            .populate("user", "name avatar")
-            .sort({ createdAt: -1 })
-            .skip(skip)
-            .limit(parseInt(limit));
+      const comments = await Comment.find({ post: postId, parentComment: null, isApproved: true })
+        .populate("user", "_id name avatar")
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean();
 
-        const totalRootComments = await Comment.countDocuments({ post: postId, parentComment: null, isApproved: true });
+      const totalComments = await Comment.countDocuments({
+        post: postId,
+        parentComment: null,
+        isApproved: true,
+      });
 
-        const commentsWithReplies = await Promise.all(rootComments.map(async (comment) => {
-            const replies = await Comment.find({ parentComment: comment._id, isApproved: true }).populate('user', 'name avatar');
-            return { ...comment.toObject(), replies };
-        }));
+      const populateReplies = async (comment) => {
+        const replies = await Comment.find({ parentComment: comment._id, isApproved: true })
+          .populate("user", "_id name avatar")
+          .sort({ createdAt: 1 })
+          .lean();
 
-        res.json({
-            comments: commentsWithReplies,
-            totalPages: Math.ceil(totalRootComments / limit),
-            currentPage: parseInt(page),
-            totalComments: totalRootComments
-        });
+        for (let reply of replies) {
+          reply.createdAtFormatted = dayjs(reply.createdAt).fromNow();
+          reply.replyCount = await Comment.countDocuments({ parentComment: reply._id });
+          reply.replies = await populateReplies(reply);
+        }
+        return replies;
+      };
+
+      const populatedComments = await Promise.all(
+        comments.map(async (comment) => {
+          comment.replyCount = await Comment.countDocuments({ parentComment: comment._id });
+          comment.createdAtFormatted = dayjs(comment.createdAt).fromNow();
+          if (req.user) {
+            comment.isOwner = comment.user._id.toString() === req.user._id.toString();
+            comment.canEdit = comment.isOwner || req.user.role === "admin";
+          } else {
+            comment.isOwner = false;
+            comment.canEdit = false;
+          }
+          comment.replies = await populateReplies(comment);
+          return comment;
+        })
+      );
+
+
+      const normalizeMongoDoc = (doc) => {
+        if (Array.isArray(doc)) return doc.map(normalizeMongoDoc);
+        if (doc && typeof doc === "object") {
+          const { _id, __v, ...rest } = doc;
+          return { id: _id?.toString(), ...rest };
+        }
+        return doc;
+      };
+
+
+
+      return res.status(200).json({
+        comments: normalizeMongoDoc(populatedComments),
+        pagination: {
+          totalComments,
+          totalPages: Math.ceil(totalComments / limit),
+          currentPage: page,
+        },
+      });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+      console.error("Error fetching comments:", error);
+      return res.status(500).json({ message: "Server error", error: error.message });
     }
   },
 
